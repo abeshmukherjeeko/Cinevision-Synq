@@ -1,8 +1,8 @@
 "use client";
 
-import { Loader2, Sparkles, X } from "lucide-react";
+import { ExternalLink, Key, Loader2, Sparkles, X } from "lucide-react";
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { actions, useStore } from "../lib/store";
 import type { Block, Page } from "../lib/types";
 
@@ -35,6 +35,16 @@ export default function AIPanel({ open, onClose }: { open: boolean; onClose: () 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AIResult | null>(null);
+  const [keyStatus, setKeyStatus] = useState<"checking" | "ok" | "missing">("checking");
+
+  useEffect(() => {
+    if (!open) return;
+    setKeyStatus("checking");
+    fetch("/api/ai/health")
+      .then((r) => r.json())
+      .then((d) => setKeyStatus(d.keyConfigured ? "ok" : "missing"))
+      .catch(() => setKeyStatus("missing"));
+  }, [open]);
 
   if (!open) return null;
 
@@ -115,6 +125,9 @@ export default function AIPanel({ open, onClose }: { open: boolean; onClose: () 
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {keyStatus === "missing" && <SetupWalkthrough />}
+        {keyStatus !== "missing" && (
+        <>
         <div>
           <label className="text-xs uppercase tracking-wide text-notion-muted mb-1 block">
             Paste a link or text
@@ -203,7 +216,70 @@ export default function AIPanel({ open, onClose }: { open: boolean; onClose: () 
             </button>
           </div>
         )}
+        </>
+        )}
       </div>
+    </div>
+  );
+}
+
+function SetupWalkthrough() {
+  return (
+    <div className="space-y-4 text-sm">
+      <div className="flex items-center gap-2 text-notion-text font-medium">
+        <Key size={14} /> One-time setup
+      </div>
+      <p className="text-notion-muted">
+        The AI panel needs an Anthropic API key to talk to Claude. Takes about 2 minutes:
+      </p>
+
+      <ol className="space-y-3 list-decimal ml-5 text-notion-text">
+        <li>
+          <a
+            href="https://console.anthropic.com/settings/keys"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="text-notion-accent inline-flex items-center gap-1 underline"
+          >
+            Open the Anthropic Console <ExternalLink size={12} />
+          </a>
+          {" "}and create an API key. It starts with{" "}
+          <code className="px-1 py-0.5 rounded bg-notion-sidebar border border-notion-border text-xs">
+            sk-ant-
+          </code>
+          .
+        </li>
+        <li>
+          In your project folder, create a file named{" "}
+          <code className="px-1 py-0.5 rounded bg-notion-sidebar border border-notion-border text-xs">
+            .env.local
+          </code>{" "}
+          (a template{" "}
+          <code className="px-1 py-0.5 rounded bg-notion-sidebar border border-notion-border text-xs">
+            .env.local.example
+          </code>{" "}
+          is already there).
+        </li>
+        <li>
+          Paste this line into it (replace with your real key):
+          <pre className="mt-1 p-2 rounded bg-notion-sidebar border border-notion-border text-xs font-mono whitespace-pre-wrap break-all">
+            ANTHROPIC_API_KEY=sk-ant-...
+          </pre>
+        </li>
+        <li>Stop the dev server (Ctrl+C) and run <code className="px-1 py-0.5 rounded bg-notion-sidebar border border-notion-border text-xs">npm run dev</code> again.</li>
+      </ol>
+
+      <div className="p-3 rounded bg-notion-sidebar border border-notion-border text-xs text-notion-muted">
+        Your key stays on the server — it's never sent to the browser. Calls to Claude
+        cost a fraction of a cent each (~$0.005 per file action).
+      </div>
+
+      <button
+        onClick={() => location.reload()}
+        className="w-full bg-notion-accent text-white py-2 rounded text-sm font-medium hover:bg-blue-600"
+      >
+        I&apos;ve added my key — reload
+      </button>
     </div>
   );
 }

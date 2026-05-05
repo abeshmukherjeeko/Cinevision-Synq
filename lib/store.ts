@@ -113,6 +113,42 @@ export const actions = {
   setActive(id: string) {
     update((s) => ({ ...s, activePageId: id }));
   },
+  exportJSON(): string {
+    return JSON.stringify(state, null, 2);
+  },
+  importJSON(json: string, mode: "replace" | "merge" = "replace"): void {
+    let incoming: AppState;
+    try {
+      incoming = JSON.parse(json) as AppState;
+    } catch {
+      throw new Error("File is not valid JSON.");
+    }
+    if (
+      !incoming ||
+      typeof incoming !== "object" ||
+      typeof incoming.pages !== "object" ||
+      !Array.isArray(incoming.rootOrder)
+    ) {
+      throw new Error("File is not a Notion-clone backup.");
+    }
+    if (mode === "replace") {
+      update(() => ({
+        pages: incoming.pages,
+        rootOrder: incoming.rootOrder,
+        activePageId: incoming.activePageId ?? incoming.rootOrder[0] ?? null,
+      }));
+      return;
+    }
+    update((s) => {
+      const merged = { ...s.pages, ...incoming.pages };
+      const newIds = incoming.rootOrder.filter((id) => !s.rootOrder.includes(id));
+      return {
+        ...s,
+        pages: merged,
+        rootOrder: [...s.rootOrder, ...newIds],
+      };
+    });
+  },
   createPage(parentId: string | null = null, title = "Untitled") {
     const page = newPage(parentId, title);
     update((s) => {

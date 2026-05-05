@@ -1,8 +1,9 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AIPanel from "../components/AIPanel";
+import CommandPalette from "../components/CommandPalette";
 import Editor from "../components/Editor";
 import Sidebar from "../components/Sidebar";
 import { getActivePage, useStore } from "../lib/store";
@@ -11,10 +12,22 @@ export default function Home() {
   const state = useStore();
   const page = getActivePage(state);
   const [aiOpen, setAiOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <main className="flex h-screen w-screen overflow-hidden">
-      <Sidebar onOpenAI={() => setAiOpen(true)} />
+      <Sidebar onOpenAI={() => setAiOpen(true)} onOpenSearch={() => setSearchOpen(true)} />
       <div className="flex-1 flex flex-col relative">
         <div className="absolute top-3 right-4 z-10">
           <button
@@ -34,6 +47,7 @@ export default function Home() {
         )}
       </div>
       <AIPanel open={aiOpen} onClose={() => setAiOpen(false)} />
+      <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
     </main>
   );
 }
