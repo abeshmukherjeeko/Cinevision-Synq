@@ -25,7 +25,7 @@ const SLASH_ITEMS: { type: BlockType; label: string; hint: string }[] = [
 export default function Editor({ page }: { page: Page }) {
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-12 pt-16 pb-32">
+      <div className="max-w-3xl mx-auto px-4 md:px-12 pt-14 md:pt-16 pb-32">
         <PageHeader page={page} />
         <BlockList page={page} />
       </div>
@@ -65,7 +65,7 @@ function PageHeader({ page }: { page: Page }) {
         value={page.title}
         onChange={(e) => actions.renamePage(page.id, e.target.value)}
         placeholder="Untitled"
-        className="block w-full mt-2 text-4xl font-bold text-notion-text outline-none bg-transparent placeholder:text-notion-border"
+        className="block w-full mt-2 text-3xl md:text-4xl font-bold text-notion-text outline-none bg-transparent placeholder:text-notion-border"
       />
     </div>
   );

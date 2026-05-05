@@ -7,9 +7,11 @@ import type { Page } from "../lib/types";
 
 interface Props {
   onOpenSearch: () => void;
+  open: boolean;
+  onClose: () => void;
 }
 
-export default function Sidebar({ onOpenSearch }: Props) {
+export default function Sidebar({ onOpenSearch, open, onClose }: Props) {
   const fileInput = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
@@ -43,7 +45,19 @@ export default function Sidebar({ onOpenSearch }: Props) {
     .filter((p): p is Page => Boolean(p));
 
   return (
-    <aside className="w-60 shrink-0 bg-notion-sidebar border-r border-notion-border flex flex-col text-sm">
+    <>
+    {open && (
+      <div
+        onClick={onClose}
+        className="md:hidden fixed inset-0 z-30 bg-black/30"
+        aria-hidden="true"
+      />
+    )}
+    <aside
+      className={`w-60 shrink-0 bg-notion-sidebar border-r border-notion-border flex flex-col text-sm md:static md:translate-x-0 fixed inset-y-0 left-0 z-40 transition-transform duration-200 ${
+        open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      }`}
+    >
       <div className="p-3 border-b border-notion-border flex items-center justify-between">
         <div className="font-semibold text-notion-text">My Workspace</div>
         <button
@@ -97,6 +111,7 @@ export default function Sidebar({ onOpenSearch }: Props) {
         Saved locally in this browser
       </div>
     </aside>
+    </>
   );
 }
 
