@@ -1,30 +1,26 @@
 # Cinevision-Synq
 
-A Notion-style note app: nested pages, block editor (text, headings, lists, todos, callouts, code, embeds), and an AI panel that uses the Claude API to auto-categorize anything you paste — a YouTube link, an article URL, or a snippet of text — and file it into the right page with a clean summary.
+A Notion-style note app: nested pages, a block-based editor, and rich embeds — all running locally in your browser.
 
 ## Quick start
 
 ```bash
-cp .env.local.example .env.local
-# put your Anthropic API key in .env.local
 npm install
 npm run dev
 ```
 
 Open http://localhost:3000.
 
-## Using the AI panel
+## Features
 
-1. Click the sparkle (top-right or in the sidebar header).
-2. Paste a URL (e.g. a YouTube video) or any text.
-3. Optional: add a hint like *"this should go in Videos"*.
-4. Hit **Categorize & summarize** — Claude picks a target page (or proposes a new one), writes a short summary, extracts tags and key points, and inserts an embed block.
-5. Click **File it** to drop the blocks into the chosen page.
+- **Nested pages** — sidebar with collapsible page tree, hover to add a subpage or delete.
+- **Block editor** — type `/` for the slash menu (text, H1/H2/H3, bullet/numbered lists, to-dos, quote, callout, code, divider, embeds). Enter for a new line, Shift+Enter for soft break, Backspace at empty turns the block back into text.
+- **Embeds** — paste a YouTube/Vimeo/Spotify URL for a playable embed; any other URL becomes a Notion-style bookmark card.
+- **⌘K search** — fuzzy-find any page; type a name and Enter to create one if it doesn't exist.
+- **Export / Import** — back up your whole workspace as JSON from the sidebar footer.
 
-Notes are stored in your browser's localStorage (single-user, no backend).
+Notes are saved to your browser's `localStorage`. There is no backend — it's just you and the browser.
 
 ## Stack
 
-- Next.js 15 (App Router) · React 19 · TypeScript · Tailwind
-- `@anthropic-ai/sdk` server-side route at `/api/ai`
-- Model: `claude-opus-4-7` with `output_config.format` JSON-schema structured output and prompt caching on the system prompt
+Next.js 15 (App Router) · React 19 · TypeScript · Tailwind CSS · `lucide-react` icons.

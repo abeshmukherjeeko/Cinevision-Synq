@@ -1,16 +1,15 @@
 "use client";
 
-import { ChevronRight, Download, FileText, Plus, Search, Sparkles, Trash2, Upload } from "lucide-react";
+import { ChevronRight, Download, FileText, Plus, Search, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { actions, childrenOf, useStore } from "../lib/store";
 import type { Page } from "../lib/types";
 
 interface Props {
-  onOpenAI: () => void;
   onOpenSearch: () => void;
 }
 
-export default function Sidebar({ onOpenAI, onOpenSearch }: Props) {
+export default function Sidebar({ onOpenSearch }: Props) {
   const fileInput = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
@@ -47,22 +46,13 @@ export default function Sidebar({ onOpenAI, onOpenSearch }: Props) {
     <aside className="w-60 shrink-0 bg-notion-sidebar border-r border-notion-border flex flex-col text-sm">
       <div className="p-3 border-b border-notion-border flex items-center justify-between">
         <div className="font-semibold text-notion-text">My Workspace</div>
-        <div className="flex items-center gap-0.5">
-          <button
-            onClick={onOpenSearch}
-            title="Search (⌘K)"
-            className="p-1.5 rounded hover:bg-notion-hover text-notion-muted hover:text-notion-text"
-          >
-            <Search size={16} />
-          </button>
-          <button
-            onClick={onOpenAI}
-            title="AI panel"
-            className="p-1.5 rounded hover:bg-notion-hover text-notion-muted hover:text-notion-accent"
-          >
-            <Sparkles size={16} />
-          </button>
-        </div>
+        <button
+          onClick={onOpenSearch}
+          title="Search (⌘K)"
+          className="p-1.5 rounded hover:bg-notion-hover text-notion-muted hover:text-notion-text"
+        >
+          <Search size={16} />
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto py-2">
@@ -104,7 +94,7 @@ export default function Sidebar({ onOpenAI, onOpenSearch }: Props) {
         />
       </div>
       <div className="px-3 pb-2 text-[11px] text-notion-muted">
-        Saved locally · Powered by Claude
+        Saved locally in this browser
       </div>
     </aside>
   );

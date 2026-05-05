@@ -22,20 +22,19 @@ function newPage(parentId: string | null = null, title = "Untitled", icon = "�
 function seed(): AppState {
   const welcome = newPage(null, "Welcome", "👋");
   welcome.blocks = [
-    { id: nanoid(10), type: "h1", text: "Welcome to your Notion" },
+    { id: nanoid(10), type: "h1", text: "Welcome to your notes" },
     {
       id: nanoid(10),
       type: "text",
-      text: "Type / for blocks. Press Enter for a new line. Shift+Enter for soft break.",
+      text: "Type / for blocks (headings, lists, todos, embeds…). Press Enter for a new line. Shift+Enter for soft break.",
     },
-    { id: nanoid(10), type: "h2", text: "Try the AI panel" },
-    {
-      id: nanoid(10),
-      type: "text",
-      text: "Click the sparkle icon (top-right). Paste a YouTube link or article URL and let Claude file it for you.",
-    },
+    { id: nanoid(10), type: "h2", text: "Try a few things" },
+    { id: nanoid(10), type: "bullet", text: "Press ⌘K (or Ctrl+K) to search pages." },
+    { id: nanoid(10), type: "bullet", text: "Hover a page in the sidebar to add a subpage or delete it." },
+    { id: nanoid(10), type: "bullet", text: "Paste a YouTube link with /embed to get a playable video." },
+    { id: nanoid(10), type: "bullet", text: "Use Export in the sidebar footer to back up your notes as JSON." },
     { id: nanoid(10), type: "divider", text: "" },
-    { id: nanoid(10), type: "callout", text: "Tip: drag pages in the sidebar to nest them." },
+    { id: nanoid(10), type: "callout", text: "Notes are saved in this browser only. Export regularly if you care about them." },
   ];
   const inbox = newPage(null, "Inbox", "📥");
   const reading = newPage(null, "Reading", "📚");
